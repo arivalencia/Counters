@@ -58,7 +58,7 @@ class CounterAdapter(
 
     }
 
-    public interface CounterListener {
+    interface CounterListener {
         fun onClickAllCounter(counter: CounterDomain, position: Int)
         fun onIncrementCounter(counter: CounterDomain, position: Int)
         fun onDecrementCounter(counter: CounterDomain, position: Int)
