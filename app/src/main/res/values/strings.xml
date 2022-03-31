@@ -7,4 +7,7 @@
     <string name="title">Title</string>
     <string name="accept">Accept</string>
     <string name="required">Required</string>
+    <string name="oops">Oops!</string>
+    <string name="something_went_wrong">Sorry… something went wrong. Please try again later.</string>
+    <string name="without_results">Without results</string>
 </resources>

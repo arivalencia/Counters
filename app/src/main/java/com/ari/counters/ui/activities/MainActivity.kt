@@ -10,6 +10,7 @@ import com.ari.counters.databinding.ActivityMainBinding
 import com.ari.counters.domain.model.CounterDomain
 import com.ari.counters.ui.adapters.CounterAdapter
 import com.ari.counters.ui.dialogs.AddCounterBottomSheet
+import com.ari.counters.ui.dialogs.ErrorBottomSheet
 import com.ari.counters.ui.viewmodel.CounterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -64,21 +65,29 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initObservers() {
+        // On Loading
         counterViewModel.isLoading.observe(this) { isLoading ->
             binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
-        counterViewModel.onErrorRequest.observe(this) { error ->
-            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
-        }
+        // On Error Request
+        counterViewModel.onErrorRequest.observe(this) { error -> onErrorRequest(error) }
 
+        // Refresh adapter when [countersToShow] change
         counterViewModel.countersToShow.observe(this) { counters ->
             countersAdapter.setList(counters.reversed())
+            binding.countersEmptyNotice.visibility = if (counters.isEmpty()) View.VISIBLE else View.GONE
 
             var totalCounter = 0
             counters.forEach { counter -> totalCounter +=  counter.count }
             binding.tvTotalCounter.text = "${getString(R.string.total_counter)} $totalCounter"
         }
+    }
+
+    // If request is bad response show dialog error
+    private fun onErrorRequest(error: String) {
+        val dialog = ErrorBottomSheet()
+        dialog.show(supportFragmentManager, dialog.tag)
     }
 
     override fun onDestroy() {
