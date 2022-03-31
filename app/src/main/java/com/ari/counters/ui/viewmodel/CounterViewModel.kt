@@ -9,6 +9,7 @@ import com.ari.counters.domain.model.Result
 import com.ari.counters.domain.usecases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.zip.ZipEntry
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,10 +19,11 @@ class CounterViewModel @Inject constructor(
     private val incrementCounterUseCase: IncrementCounterUseCase,
     private val decrementCounterUseCase: DecrementCounterUseCase,
     private val deleteCounterUseCase: DeleteCounterUseCase
-): ViewModel() {
+) : ViewModel() {
 
-    private val counterList: MutableLiveData<List<CounterDomain>> = MutableLiveData(arrayListOf())
-    private val _countersToShow: MutableLiveData<List<CounterDomain>> = MutableLiveData(arrayListOf())
+    private val _counterList: MutableLiveData<List<CounterDomain>> = MutableLiveData(arrayListOf())
+    private val _countersToShow: MutableLiveData<List<CounterDomain>> =
+        MutableLiveData(arrayListOf())
     val countersToShow: LiveData<List<CounterDomain>> get() = _countersToShow
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -35,7 +37,7 @@ class CounterViewModel @Inject constructor(
         when (val result = getAllCountersUseCase()) {
             is Result.Error -> _onErrorRequest.postValue(result.error)
             is Result.Success -> {
-                counterList.postValue(result.result)
+                _counterList.postValue(result.result)
                 _countersToShow.postValue(result.result)
             }
         }
@@ -44,20 +46,18 @@ class CounterViewModel @Inject constructor(
 
     fun addCounter(counterTitle: String) = viewModelScope.launch {
         _isLoading.postValue(true)
-
-        when(val result = addCounterUseCase(counterTitle)) {
+        when (val result = addCounterUseCase(counterTitle)) {
             is Result.Error -> _onErrorRequest.postValue(result.error)
             is Result.Success -> {
-                val originalList = ArrayList(counterList.value!!)
+                val originalList = ArrayList(_counterList.value!!)
                 originalList.add(result.result)
-                counterList.postValue(originalList)
+                _counterList.postValue(originalList)
 
                 val toShowList = ArrayList(countersToShow.value!!)
                 toShowList.add(result.result)
                 _countersToShow.postValue(toShowList)
             }
         }
-
         _isLoading.postValue(false)
 
     }
@@ -65,13 +65,13 @@ class CounterViewModel @Inject constructor(
     fun deleteCounter(counterId: String) = viewModelScope.launch {
         _isLoading.postValue(true)
 
-        when(val result = deleteCounterUseCase(counterId)) {
+        when (val result = deleteCounterUseCase(counterId)) {
             is Result.Error -> _onErrorRequest.postValue(result.error)
             is Result.Success -> {
-                val originalList = ArrayList(counterList.value!!)
+                val originalList = ArrayList(_counterList.value!!)
                 originalList.first() { it.id == counterId }?.let { counterDeleted ->
                     originalList.remove(counterDeleted)
-                    counterList.postValue(originalList)
+                    _counterList.postValue(originalList)
                 }
 
                 val toShowList = ArrayList(countersToShow.value!!)
@@ -88,7 +88,7 @@ class CounterViewModel @Inject constructor(
     fun incrementCounter(counterId: String) = viewModelScope.launch {
         _isLoading.postValue(true)
 
-        when(val result = incrementCounterUseCase(counterId)) {
+        when (val result = incrementCounterUseCase(counterId)) {
             is Result.Error -> _onErrorRequest.postValue(result.error)
             is Result.Success -> updateListsOnIncrementOrDecrementCounter(result.result)
         }
@@ -98,29 +98,41 @@ class CounterViewModel @Inject constructor(
 
     fun decrementCounter(counterId: String) = viewModelScope.launch {
         _isLoading.postValue(true)
-
-        when(val result = decrementCounterUseCase(counterId)) {
+        when (val result = decrementCounterUseCase(counterId)) {
             is Result.Error -> _onErrorRequest.postValue(result.error)
             is Result.Success -> updateListsOnIncrementOrDecrementCounter(result.result)
         }
-
         _isLoading.postValue(false)
     }
 
     private fun updateListsOnIncrementOrDecrementCounter(counterUpdated: CounterDomain) {
-        val originalList = ArrayList(counterList.value!!)
-        val position: Int = originalList.indexOf(originalList.find { counter -> counter.id == counterUpdated.id })
+        val originalList = ArrayList(_counterList.value!!)
+        val position: Int =
+            originalList.indexOf(originalList.find { counter -> counter.id == counterUpdated.id })
         if (position >= 0) { // if counter exist in list -> update
             originalList[position] = counterUpdated
-            counterList.postValue(originalList)
+            _counterList.postValue(originalList)
         }
 
         val toShowList = ArrayList(countersToShow.value!!)
-        val positionOfListToShow: Int = toShowList.indexOf(toShowList.find { counter -> counter.id == counterUpdated.id })
+        val positionOfListToShow: Int =
+            toShowList.indexOf(toShowList.find { counter -> counter.id == counterUpdated.id })
         if (positionOfListToShow >= 0) { // if counter exist in list -> update
             toShowList[position] = counterUpdated
             _countersToShow.postValue(toShowList)
         }
+    }
+
+    fun onSearchCounter(inputSearch: String) = viewModelScope.launch {
+        if (inputSearch.isEmpty() || inputSearch.isBlank()) { // Invalid search
+            _countersToShow.postValue(_counterList.value!!) // Show all
+            return@launch
+        }
+
+        val coincidences: List<CounterDomain> = _counterList.value!!.filter { counter ->
+            counter.title.lowercase().contains(inputSearch.lowercase())
+        }
+        _countersToShow.postValue(coincidences) // Show all
     }
 
 }

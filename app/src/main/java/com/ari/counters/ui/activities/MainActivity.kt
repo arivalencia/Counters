@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.widget.addTextChangedListener
 import com.ari.counters.R
 import com.ari.counters.databinding.ActivityMainBinding
 import com.ari.counters.domain.model.CounterDomain
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setOnClickListeners()
+        setInputSearchListener()
         initComponents()
         initObservers()
 
@@ -37,6 +39,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setOnClickListeners() {
         binding.tvAddCounter.setOnClickListener { onCreateCounter() }
+    }
+
+    private fun setInputSearchListener() {
+        binding.etSearch.addTextChangedListener { inputSearch ->
+            inputSearch?.let { counterViewModel.onSearchCounter(inputSearch.toString()) }
+        }
     }
 
     private fun onCreateCounter() {
