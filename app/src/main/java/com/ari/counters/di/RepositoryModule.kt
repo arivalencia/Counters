@@ -1,6 +1,7 @@
 package com.ari.counters.di
 
-import com.ari.counters.data.contracts.CounterDataSource
+import com.ari.counters.data.contracts.CounterLocalDataSource
+import com.ari.counters.data.contracts.CounterRemoteDataSource
 import com.ari.counters.data.repository.CounterRepository
 import dagger.Module
 import dagger.Provides
@@ -14,7 +15,9 @@ class RepositoryModule {
 
     @Inject
     @Provides
-    fun provideCounterRepository(counterDataSource: CounterDataSource): CounterRepository =
-        CounterRepository(counterDataSource)
+    fun provideCounterRepository(
+        counterRemoteDataSource: CounterRemoteDataSource,
+        counterLocalDataSource: CounterLocalDataSource
+    ): CounterRepository = CounterRepository(counterRemoteDataSource, counterLocalDataSource)
 
 }

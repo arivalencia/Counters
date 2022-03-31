@@ -13,8 +13,17 @@ class GetAllCountersUseCase @Inject constructor(
 
     suspend operator fun invoke(): Result<List<CounterDomain>> =
         when (val response = counterRepository.getAllCounter()) {
-            is Response.Error -> Result.Error(response.error)
-            is Response.Success -> Result.Success(response.result.map { it.toDomain() })
+            is Response.Error -> {
+                //Result.Error(response.error)
+                Result.Success(counterRepository.getAllLocalCounters().map { it.toDomain() })
+            }
+            is Response.Success -> {
+                // Update local data
+                counterRepository.clearLocalTable()
+                counterRepository.insertCounterListInLocal(response.result)
+
+                Result.Success(response.result.map { it.toDomain() })
+            }
         }
 
 }

@@ -14,7 +14,13 @@ class AddCounterUseCase @Inject constructor(
     suspend operator fun invoke(counterTitle: String): Result<CounterDomain> =
         when (val response = counterRepository.addCounter(counterTitle)) {
             is Response.Error -> Result.Error(response.error)
-            is Response.Success -> Result.Success(response.result.toDomain())
+            is Response.Success -> {
+                // Update local data
+                counterRepository.clearLocalTable()
+                counterRepository.insertCounterListInLocal(response.result)
+
+                Result.Success(response.result.last().toDomain())
+            }
         }
 
 }
