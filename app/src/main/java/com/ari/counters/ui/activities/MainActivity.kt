@@ -14,6 +14,8 @@ import com.ari.counters.ui.dialogs.AddCounterBottomSheet
 import com.ari.counters.ui.dialogs.ErrorBottomSheet
 import com.ari.counters.ui.viewmodel.CounterViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
+import kotlin.coroutines.coroutineContext
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -37,8 +39,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @ExperimentalCoroutinesApi
     private fun setOnClickListeners() {
         binding.tvAddCounter.setOnClickListener { onCreateCounter() }
+
+        binding.btnBatchDeletion.setOnClickListener {
+            GlobalScope.launch {
+                countersAdapter.getSelections().forEach { counterSelected ->
+                    counterViewModel.deleteCounter(counterSelected.id).await()
+                }
+            }
+        }
     }
 
     private fun setInputSearchListener() {
@@ -59,6 +70,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun initComponents() {
         countersAdapter = CounterAdapter(object : CounterAdapter.CounterListener {
+            override fun onClickAllCounter(counter: CounterDomain, position: Int) {
+                checkIfShowBtnBatchDeletion()
+            }
+
             override fun onIncrementCounter(counter: CounterDomain, position: Int) {
                 counterViewModel.incrementCounter(counter.id)
             }
@@ -68,10 +83,17 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onDeleteCounter(counter: CounterDomain, position: Int) {
-                counterViewModel.deleteCounter(counter.id)
+                GlobalScope.launch {
+                    counterViewModel.deleteCounter(counter.id)
+                }
             }
         })
         binding.rvCounters.adapter = countersAdapter
+    }
+
+    private fun checkIfShowBtnBatchDeletion() {
+        binding.containerDeletion.visibility =
+            if (countersAdapter.getSelections().isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun initObservers() {
@@ -92,6 +114,8 @@ class MainActivity : AppCompatActivity() {
             var totalCounter = 0
             counters.forEach { counter -> totalCounter += counter.count }
             binding.tvTotalCounter.text = "${getString(R.string.total_counter)} $totalCounter"
+            checkIfShowBtnBatchDeletion()
+            //counterViewModel.onSearchCounter(binding.etSearch.text.toString())
         }
     }
 

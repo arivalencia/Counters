@@ -10,4 +10,5 @@
     <string name="oops">Oops!</string>
     <string name="something_went_wrong">Sorry… something went wrong. Please try again later.</string>
     <string name="without_results">Without results</string>
+    <string name="delete_selected_counters">Delete selected counters</string>
 </resources>

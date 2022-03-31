@@ -18,9 +18,10 @@
         app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
+            android:background="@{counter.selected ? @color/counter_selected : @color/white}"
             android:padding="8dp">
 
             <androidx.appcompat.widget.AppCompatTextView
