@@ -5,10 +5,7 @@ import com.ari.counters.data.model.CounterData
 import com.ari.counters.data.model.DeleteCounterBody
 import com.ari.counters.data.model.IncDecCounterBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface CounterApi {
 
@@ -18,7 +15,7 @@ interface CounterApi {
     @POST("counter")
     suspend fun addCounter(@Body body: AddCounterBody): Response<List<CounterData>>
 
-    @DELETE("counter")
+    @HTTP(method = "DELETE", path = "counter", hasBody = true)
     suspend fun deleteCounter(@Body body: DeleteCounterBody): Response<List<CounterData>>
 
     @POST("counter/inc")

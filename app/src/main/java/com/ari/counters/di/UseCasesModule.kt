@@ -1,8 +1,7 @@
 package com.ari.counters.di
 
 import com.ari.counters.data.repository.CounterRepository
-import com.ari.counters.domain.usecases.AddCounterUseCase
-import com.ari.counters.domain.usecases.GetAllCountersUseCase
+import com.ari.counters.domain.usecases.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +23,27 @@ class UseCasesModule {
     @Provides
     fun provideAddCounterUseCase(counterRepository: CounterRepository): AddCounterUseCase =
         AddCounterUseCase(
+            counterRepository
+        )
+
+    @Inject
+    @Provides
+    fun provideIncrementCounterUseCase(counterRepository: CounterRepository): IncrementCounterUseCase =
+        IncrementCounterUseCase(
+            counterRepository
+        )
+
+    @Inject
+    @Provides
+    fun provideDecrementCounterUseCase(counterRepository: CounterRepository): DecrementCounterUseCase =
+        DecrementCounterUseCase(
+            counterRepository
+        )
+
+    @Inject
+    @Provides
+    fun provideDeleteCounterUseCase(counterRepository: CounterRepository): DeleteCounterUseCase =
+        DeleteCounterUseCase(
             counterRepository
         )
 

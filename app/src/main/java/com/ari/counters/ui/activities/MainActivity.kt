@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onDelete(counter: CounterDomain, position: Int) {
-                    TODO("Not yet implemented")
+                    counterViewModel.deleteCounter(counter.id)
                 }
             })
         binding.rvCounters.adapter = countersAdapter

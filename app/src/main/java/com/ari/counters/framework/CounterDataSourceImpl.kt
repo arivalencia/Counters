@@ -39,12 +39,12 @@ class CounterDataSourceImpl @Inject constructor(
         Response.Error(e.message ?: Constants.GENERIC_ERROR)
     }
 
-    override suspend fun deleteCounter(counterId: String): Response<Any?> = try {
+    override suspend fun deleteCounter(counterId: String): Response<Any> = try {
         val response = counterApi.deleteCounter(DeleteCounterBody(counterId))
 
         if (response.isSuccessful) {
             response.body()?.let {
-                Response.Success(null)
+                Response.Success("ok")
             } ?: Response.Error(Constants.BODY_NULL_ERROR)
         } else {
             Response.Error(response.message())

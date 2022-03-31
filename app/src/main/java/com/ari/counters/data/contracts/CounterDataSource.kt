@@ -8,7 +8,7 @@ interface CounterDataSource {
 
     suspend fun addCounter(title: String): Response<CounterData>
 
-    suspend fun deleteCounter(counterId: String): Response<Any?>
+    suspend fun deleteCounter(counterId: String): Response<Any>
 
     suspend fun incrementCounter(counterId: String): Response<CounterData>
 

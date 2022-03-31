@@ -6,8 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ari.counters.domain.model.CounterDomain
 import com.ari.counters.domain.model.Result
-import com.ari.counters.domain.usecases.AddCounterUseCase
-import com.ari.counters.domain.usecases.GetAllCountersUseCase
+import com.ari.counters.domain.usecases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +14,10 @@ import javax.inject.Inject
 @HiltViewModel
 class CounterViewModel @Inject constructor(
     private val getAllCountersUseCase: GetAllCountersUseCase,
-    private val addCounterUseCase: AddCounterUseCase
+    private val addCounterUseCase: AddCounterUseCase,
+    private val incrementCounterUseCase: IncrementCounterUseCase,
+    private val decrementCounterUseCase: DecrementCounterUseCase,
+    private val deleteCounterUseCase: DeleteCounterUseCase
 ): ViewModel() {
 
     private val counterList: MutableLiveData<List<CounterDomain>> = MutableLiveData(arrayListOf())
@@ -58,6 +60,29 @@ class CounterViewModel @Inject constructor(
 
         _isLoading.postValue(false)
 
+    }
+
+    fun deleteCounter(counterId: String) = viewModelScope.launch {
+        _isLoading.postValue(true)
+
+        when(val result = deleteCounterUseCase(counterId)) {
+            is Result.Error -> _onErrorRequest.postValue(result.error)
+            is Result.Success -> {
+                val originalList = ArrayList(counterList.value!!)
+                originalList.first() { it.id == counterId }?.let { counterDeleted ->
+                    originalList.remove(counterDeleted)
+                    counterList.postValue(originalList)
+                }
+
+                val toShowList = ArrayList(countersToShow.value!!)
+                toShowList.first() { it.id == counterId }?.let { counterDeleted ->
+                    toShowList.remove(counterDeleted)
+                    _countersToShow.postValue(toShowList)
+                }
+            }
+        }
+
+        _isLoading.postValue(false)
     }
 
 

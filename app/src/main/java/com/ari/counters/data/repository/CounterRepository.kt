@@ -14,7 +14,7 @@ class CounterRepository @Inject constructor(
     suspend fun addCounter(title: String): Response<CounterData> =
         counterDataSource.addCounter(title)
 
-    suspend fun deleteCounter(counterId: String): Response<Any?> =
+    suspend fun deleteCounter(counterId: String): Response<Any> =
         counterDataSource.deleteCounter(counterId)
 
     suspend fun incrementCounter(counterId: String): Response<CounterData> =
