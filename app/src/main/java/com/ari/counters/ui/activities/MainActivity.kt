@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onCreateCounter() {
         val dialog = AddCounterBottomSheet()
-        dialog.setListener(object: AddCounterBottomSheet.AddCounterListener{
+        dialog.setListener(object : AddCounterBottomSheet.AddCounterListener {
             override fun onCreateCounter(counterTitle: String) {
                 counterViewModel.addCounter(counterTitle)
             }
@@ -50,17 +50,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initComponents() {
-        countersAdapter = CounterAdapter(
-            //counterViewModel.countersToShow.value!!,
-            object : CounterAdapter.CounterListener {
-                override fun openCounter(counter: CounterDomain, position: Int) {
-                    TODO("Not yet implemented")
-                }
+        countersAdapter = CounterAdapter(object : CounterAdapter.CounterListener {
+            override fun onIncrementCounter(counter: CounterDomain, position: Int) {
+                counterViewModel.incrementCounter(counter.id)
+            }
 
-                override fun onDelete(counter: CounterDomain, position: Int) {
-                    counterViewModel.deleteCounter(counter.id)
-                }
-            })
+            override fun onDecrementCounter(counter: CounterDomain, position: Int) {
+                counterViewModel.decrementCounter(counter.id)
+            }
+
+            override fun onDeleteCounter(counter: CounterDomain, position: Int) {
+                counterViewModel.deleteCounter(counter.id)
+            }
+        })
         binding.rvCounters.adapter = countersAdapter
     }
 
@@ -76,10 +78,11 @@ class MainActivity : AppCompatActivity() {
         // Refresh adapter when [countersToShow] change
         counterViewModel.countersToShow.observe(this) { counters ->
             countersAdapter.setList(counters.reversed())
-            binding.countersEmptyNotice.visibility = if (counters.isEmpty()) View.VISIBLE else View.GONE
+            binding.countersEmptyNotice.visibility =
+                if (counters.isEmpty()) View.VISIBLE else View.GONE
 
             var totalCounter = 0
-            counters.forEach { counter -> totalCounter +=  counter.count }
+            counters.forEach { counter -> totalCounter += counter.count }
             binding.tvTotalCounter.text = "${getString(R.string.total_counter)} $totalCounter"
         }
     }

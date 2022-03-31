@@ -59,7 +59,7 @@ class CounterDataSourceImpl @Inject constructor(
 
         if (response.isSuccessful) {
             response.body()?.let { counters ->
-                Response.Success(counters[0])
+                Response.Success(counters.find { counter -> counter.id == counterId }!!)
             } ?: Response.Error(Constants.BODY_NULL_ERROR)
         } else {
             Response.Error(response.message())
@@ -74,7 +74,7 @@ class CounterDataSourceImpl @Inject constructor(
 
         if (response.isSuccessful) {
             response.body()?.let { counters ->
-                Response.Success(counters[0])
+                Response.Success(counters.find { counter -> counter.id == counterId }!!)
             } ?: Response.Error(Constants.BODY_NULL_ERROR)
         } else {
             Response.Error(response.message())

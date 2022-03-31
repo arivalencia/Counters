@@ -41,18 +41,22 @@ class CounterAdapter(
         fun bind(counter: CounterDomain, position: Int) {
             binding.counter = counter
 
-            // On click item
-            binding.root.setOnClickListener { events.openCounter(counter, position) }
+            // On click increment drawable
+            binding.ivIncrement.setOnClickListener { events.onIncrementCounter(counter, position) }
+
+            // On click decrement drawable
+            binding.ivDecrement.setOnClickListener { events.onDecrementCounter(counter, position) }
 
             // On click delete drawable
-            binding.ivDelete.setOnClickListener { events.onDelete(counter, position) }
+            binding.ivDelete.setOnClickListener { events.onDeleteCounter(counter, position) }
         }
 
     }
 
     public interface CounterListener {
-        fun openCounter(counter: CounterDomain, position: Int)
-        fun onDelete(counter: CounterDomain, position: Int)
+        fun onIncrementCounter(counter: CounterDomain, position: Int)
+        fun onDecrementCounter(counter: CounterDomain, position: Int)
+        fun onDeleteCounter(counter: CounterDomain, position: Int)
     }
 
 }

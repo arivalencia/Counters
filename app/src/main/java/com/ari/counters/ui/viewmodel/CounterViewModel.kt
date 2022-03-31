@@ -85,6 +85,42 @@ class CounterViewModel @Inject constructor(
         _isLoading.postValue(false)
     }
 
+    fun incrementCounter(counterId: String) = viewModelScope.launch {
+        _isLoading.postValue(true)
 
+        when(val result = incrementCounterUseCase(counterId)) {
+            is Result.Error -> _onErrorRequest.postValue(result.error)
+            is Result.Success -> updateListsOnIncrementOrDecrementCounter(result.result)
+        }
+
+        _isLoading.postValue(false)
+    }
+
+    fun decrementCounter(counterId: String) = viewModelScope.launch {
+        _isLoading.postValue(true)
+
+        when(val result = decrementCounterUseCase(counterId)) {
+            is Result.Error -> _onErrorRequest.postValue(result.error)
+            is Result.Success -> updateListsOnIncrementOrDecrementCounter(result.result)
+        }
+
+        _isLoading.postValue(false)
+    }
+
+    private fun updateListsOnIncrementOrDecrementCounter(counterUpdated: CounterDomain) {
+        val originalList = ArrayList(counterList.value!!)
+        val position: Int = originalList.indexOf(originalList.find { counter -> counter.id == counterUpdated.id })
+        if (position >= 0) { // if counter exist in list -> update
+            originalList[position] = counterUpdated
+            counterList.postValue(originalList)
+        }
+
+        val toShowList = ArrayList(countersToShow.value!!)
+        val positionOfListToShow: Int = toShowList.indexOf(toShowList.find { counter -> counter.id == counterUpdated.id })
+        if (positionOfListToShow >= 0) { // if counter exist in list -> update
+            toShowList[position] = counterUpdated
+            _countersToShow.postValue(toShowList)
+        }
+    }
 
 }
