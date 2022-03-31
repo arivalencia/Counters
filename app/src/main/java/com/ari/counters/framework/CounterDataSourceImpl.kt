@@ -29,7 +29,7 @@ class CounterDataSourceImpl @Inject constructor(
 
         if (response.isSuccessful) {
             response.body()?.let { counters ->
-                Response.Success(counters[0])
+                Response.Success(counters.last())
             } ?: Response.Error(Constants.BODY_NULL_ERROR)
         } else {
             Response.Error(response.message())

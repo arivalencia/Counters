@@ -3,4 +3,8 @@
     <string name="search_counter">Search counter</string>
     <string name="count_n_">Count:</string>
     <string name="total_counter">Total counter:</string>
+    <string name="add_counter">Add counter</string>
+    <string name="title">Title</string>
+    <string name="accept">Accept</string>
+    <string name="required">Required</string>
 </resources>

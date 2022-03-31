@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ari.counters.domain.model.CounterDomain
 import com.ari.counters.domain.model.Result
+import com.ari.counters.domain.usecases.AddCounterUseCase
 import com.ari.counters.domain.usecases.GetAllCountersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CounterViewModel @Inject constructor(
-    private val getAllCountersUseCase: GetAllCountersUseCase
+    private val getAllCountersUseCase: GetAllCountersUseCase,
+    private val addCounterUseCase: AddCounterUseCase
 ): ViewModel() {
 
     private val counterList: MutableLiveData<List<CounterDomain>> = MutableLiveData(arrayListOf())
@@ -37,5 +39,26 @@ class CounterViewModel @Inject constructor(
         }
         _isLoading.postValue(false)
     }
+
+    fun addCounter(counterTitle: String) = viewModelScope.launch {
+        _isLoading.postValue(true)
+
+        when(val result = addCounterUseCase(counterTitle)) {
+            is Result.Error -> _onErrorRequest.postValue(result.error)
+            is Result.Success -> {
+                val originalList = ArrayList(counterList.value!!)
+                originalList.add(result.result)
+                counterList.postValue(originalList)
+
+                val toShowList = ArrayList(countersToShow.value!!)
+                toShowList.add(result.result)
+                _countersToShow.postValue(toShowList)
+            }
+        }
+
+        _isLoading.postValue(false)
+
+    }
+
 
 }

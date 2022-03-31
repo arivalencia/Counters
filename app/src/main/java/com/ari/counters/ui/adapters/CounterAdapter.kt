@@ -1,4 +1,4 @@
-package com.ari.counters.ui
+package com.ari.counters.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

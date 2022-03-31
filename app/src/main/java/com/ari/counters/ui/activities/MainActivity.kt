@@ -1,4 +1,4 @@
-package com.ari.counters.ui
+package com.ari.counters.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,6 +8,8 @@ import androidx.activity.viewModels
 import com.ari.counters.R
 import com.ari.counters.databinding.ActivityMainBinding
 import com.ari.counters.domain.model.CounterDomain
+import com.ari.counters.ui.adapters.CounterAdapter
+import com.ari.counters.ui.dialogs.AddCounterBottomSheet
 import com.ari.counters.ui.viewmodel.CounterViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,11 +26,26 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setOnClickListeners()
         initComponents()
         initObservers()
 
         counterViewModel.getAllCounters()
 
+    }
+
+    private fun setOnClickListeners() {
+        binding.tvAddCounter.setOnClickListener { onCreateCounter() }
+    }
+
+    private fun onCreateCounter() {
+        val dialog = AddCounterBottomSheet()
+        dialog.setListener(object: AddCounterBottomSheet.AddCounterListener{
+            override fun onCreateCounter(counterTitle: String) {
+                counterViewModel.addCounter(counterTitle)
+            }
+        })
+        dialog.show(supportFragmentManager, dialog.tag)
     }
 
     private fun initComponents() {
@@ -56,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         counterViewModel.countersToShow.observe(this) { counters ->
-            countersAdapter.setList(counters)
+            countersAdapter.setList(counters.reversed())
 
             var totalCounter = 0
             counters.forEach { counter -> totalCounter +=  counter.count }
