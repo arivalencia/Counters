@@ -13,7 +13,6 @@
     <color name="window_color">#F3F3F3</color>
     <color name="letter_main">#000000</color>
     <color name="letter_secondary">#1B1B1B</color>
-    <color name="letter_secondary_hint">#959595</color>
 
 
 </resources>

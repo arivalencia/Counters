@@ -1,14 +1,16 @@
 package com.ari.counters.data.contracts
 
+import com.ari.counters.data.model.CounterData
 import com.ari.counters.data.model.Response
-import com.ari.counters.domain.model.CounterDomain
 
 interface CounterDataSource {
-    suspend fun addCounter(title: String): Response<CounterDomain>
+    suspend fun getAllCounter(): Response<List<CounterData>>
 
-    suspend fun deleteCounter(counterId: String): Response<Any>
+    suspend fun addCounter(title: String): Response<CounterData>
 
-    suspend fun incrementCounter(counterId: String): Response<CounterDomain>
+    suspend fun deleteCounter(counterId: String): Response<Any?>
 
-    suspend fun decrementCounter(counterId: String): Response<CounterDomain>
+    suspend fun incrementCounter(counterId: String): Response<CounterData>
+
+    suspend fun decrementCounter(counterId: String): Response<CounterData>
 }

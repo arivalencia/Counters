@@ -7,9 +7,19 @@ import com.ari.counters.databinding.ItemCounterBinding
 import com.ari.counters.domain.model.CounterDomain
 
 class CounterAdapter(
-    private val counters: List<CounterDomain>,
+    //private val counters: List<CounterDomain>,
     private val events: CounterListener
 ) : RecyclerView.Adapter<CounterAdapter.ViewHolder>() {
+
+    private val counters = arrayListOf<CounterDomain>()
+
+    fun setList(newList: List<CounterDomain>) {
+        counters.apply {
+            clear()
+            addAll(newList)
+        }
+        notifyDataSetChanged()
+    }
 
     fun updateCounter(newCount: Int, position: Int) {
         counters[position].count = newCount
