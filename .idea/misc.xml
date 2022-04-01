@@ -11,6 +11,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2543918918918919" />
+        <entry key="app/src/main/res/drawable/shape_rounded_dialog.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_add_counter.xml" value="0.24391891891891893" />
         <entry key="app/src/main/res/layout/dialog_error.xml" value="0.24391891891891893" />

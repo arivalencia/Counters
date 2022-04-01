@@ -9,7 +9,6 @@ import com.ari.counters.domain.model.Result
 import com.ari.counters.domain.usecases.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
-import java.util.zip.ZipEntry
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,9 +20,11 @@ class CounterViewModel @Inject constructor(
     private val deleteCounterUseCase: DeleteCounterUseCase
 ) : ViewModel() {
 
+    // Original list
     private val _counterList: MutableLiveData<List<CounterDomain>> = MutableLiveData(arrayListOf())
-    private val _countersToShow: MutableLiveData<List<CounterDomain>> =
-        MutableLiveData(arrayListOf())
+
+    // List to show in view
+    private val _countersToShow: MutableLiveData<List<CounterDomain>> = MutableLiveData(arrayListOf())
     val countersToShow: LiveData<List<CounterDomain>> get() = _countersToShow
 
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(false)
@@ -32,16 +33,15 @@ class CounterViewModel @Inject constructor(
     private val _onErrorRequest: MutableLiveData<String> = MutableLiveData()
     val onErrorRequest: LiveData<String> = _onErrorRequest
 
-    private val _inputSearch = MutableLiveData("")
-
     fun getAllCounters() = viewModelScope.launch {
+        if (_counterList.value!!.isNotEmpty()) return@launch
+
         _isLoading.postValue(true)
         when (val result = getAllCountersUseCase()) {
             is Result.Error -> _onErrorRequest.postValue(result.error)
             is Result.Success -> {
                 _counterList.postValue(result.result)
                 _countersToShow.postValue(result.result)
-                //onSearchCounter(_inputSearch.value!!)
             }
         }
         _isLoading.postValue(false)
@@ -71,19 +71,17 @@ class CounterViewModel @Inject constructor(
         when (val result = deleteCounterUseCase(counterId)) {
             is Result.Error -> _onErrorRequest.postValue(result.error)
             is Result.Success -> {
-                //synchronized(this@CounterViewModel) {
-                    val originalList = ArrayList(_counterList.value!!)
-                    originalList.find { it.id == counterId }?.let { counterDeleted ->
-                        originalList.remove(counterDeleted)
-                        _counterList.postValue(originalList)
-                    }
+                val originalList = ArrayList(_counterList.value!!)
+                originalList.find { it.id == counterId }?.let { counterDeleted ->
+                    originalList.remove(counterDeleted)
+                    _counterList.postValue(originalList)
+                }
 
-                    val toShowList = ArrayList(countersToShow.value!!)
-                    toShowList.first { it.id == counterId }?.let { counterDeleted ->
-                        toShowList.remove(counterDeleted)
-                        _countersToShow.postValue(toShowList)
-                    }
-                //}
+                val toShowList = ArrayList(countersToShow.value!!)
+                toShowList.first { it.id == counterId }?.let { counterDeleted ->
+                    toShowList.remove(counterDeleted)
+                    _countersToShow.postValue(toShowList)
+                }
             }
         }
 
@@ -138,8 +136,6 @@ class CounterViewModel @Inject constructor(
             counter.title.lowercase().contains(inputSearch.lowercase())
         }
         _countersToShow.postValue(coincidences) // Show coincidences
-
-        _inputSearch.postValue(inputSearch)
     }
 
 }

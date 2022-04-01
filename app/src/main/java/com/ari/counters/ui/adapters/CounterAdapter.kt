@@ -22,6 +22,16 @@ class CounterAdapter(
         notifyDataSetChanged()
     }
 
+    fun removeItem(counter: CounterDomain, position: Int){
+        counters.remove(counter)
+        notifyItemRemoved(position)
+    }
+
+    fun restoreItem(counter: CounterDomain, position: Int) {
+        counters.add(position, counter)
+        notifyItemInserted(position)
+    }
+
     fun getSelections(): List<CounterDomain> = counters.filter { it.isSelected }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(

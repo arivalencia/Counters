@@ -24,6 +24,7 @@ class AddCounterBottomSheet:  BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = DialogAddCounterBinding.inflate(layoutInflater)
+        setStyle(STYLE_NORMAL, R.style.AppBottomSheetDialogTheme)
         return binding.root
     }
 
@@ -54,7 +55,7 @@ class AddCounterBottomSheet:  BottomSheetDialogFragment() {
         _binding = null
     }
 
-    public interface AddCounterListener{
+    interface AddCounterListener{
         fun onCreateCounter(counterTitle: String)
     }
 

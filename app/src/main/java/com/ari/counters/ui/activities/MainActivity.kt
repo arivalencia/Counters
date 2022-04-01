@@ -1,5 +1,7 @@
 package com.ari.counters.ui.activities
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -13,9 +15,14 @@ import com.ari.counters.ui.adapters.CounterAdapter
 import com.ari.counters.ui.dialogs.AddCounterBottomSheet
 import com.ari.counters.ui.dialogs.ErrorBottomSheet
 import com.ari.counters.ui.viewmodel.CounterViewModel
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlin.coroutines.coroutineContext
+import com.google.android.material.snackbar.Snackbar
+
+
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -83,9 +90,24 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onDeleteCounter(counter: CounterDomain, position: Int) {
-                GlobalScope.launch {
-                    counterViewModel.deleteCounter(counter.id)
-                }
+                countersAdapter.removeItem(counter, position)
+                Snackbar
+                    .make(binding.root, getString(R.string.removed), Snackbar.LENGTH_LONG)
+                    .setAction(R.string.undo){
+                        countersAdapter.restoreItem(counter, position)
+                    }
+                    .setTextColor(Color.WHITE)
+                    .setActionTextColor(Color.WHITE)
+                    .setBackgroundTint(Color.BLACK)
+                    .addCallback(object: BaseTransientBottomBar.BaseCallback<Snackbar>(){
+                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                            if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                                GlobalScope.launch { counterViewModel.deleteCounter(counter.id) }
+                            }
+                        }
+                    })
+                    .show()
+
             }
         })
         binding.rvCounters.adapter = countersAdapter
