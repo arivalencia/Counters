@@ -1,4 +1,4 @@
-package com.ari.counters.framework
+package com.ari.counters.framework.network
 
 import com.ari.counters.data.model.AddCounterBody
 import com.ari.counters.data.model.CounterData

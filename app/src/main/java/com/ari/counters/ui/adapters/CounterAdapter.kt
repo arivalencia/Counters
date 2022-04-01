@@ -62,6 +62,9 @@ class CounterAdapter(
             // On click decrement drawable
             binding.ivDecrement.setOnClickListener { events.onDecrementCounter(counter, position) }
 
+            // On click decrement drawable
+            binding.ivShare.setOnClickListener { events.onShareCounter(counter, position) }
+
             // On click delete drawable
             binding.ivDelete.setOnClickListener { events.onDeleteCounter(counter, position) }
         }
@@ -72,6 +75,7 @@ class CounterAdapter(
         fun onClickAllCounter(counter: CounterDomain, position: Int)
         fun onIncrementCounter(counter: CounterDomain, position: Int)
         fun onDecrementCounter(counter: CounterDomain, position: Int)
+        fun onShareCounter(counter: CounterDomain, position: Int)
         fun onDeleteCounter(counter: CounterDomain, position: Int)
     }
 

@@ -20,8 +20,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlin.coroutines.coroutineContext
 import com.google.android.material.snackbar.Snackbar
-
-
+import android.content.Intent
+import com.ari.counters.domain.model.getInfoToShare
+import com.ari.counters.domain.model.getInfoToShareFromCounterList
 
 
 @AndroidEntryPoint
@@ -46,7 +47,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    @ExperimentalCoroutinesApi
     private fun setOnClickListeners() {
         binding.tvAddCounter.setOnClickListener { onCreateCounter() }
 
@@ -56,6 +56,10 @@ class MainActivity : AppCompatActivity() {
                     counterViewModel.deleteCounter(counterSelected.id).await()
                 }
             }
+        }
+
+        binding.btnBatchSharing.setOnClickListener {
+            counterViewModel.shareTextPlain(getInfoToShareFromCounterList(countersAdapter.getSelections()))
         }
     }
 
@@ -89,17 +93,21 @@ class MainActivity : AppCompatActivity() {
                 counterViewModel.decrementCounter(counter.id)
             }
 
+            override fun onShareCounter(counter: CounterDomain, position: Int) {
+                counterViewModel.shareTextPlain(counter.getInfoToShare())
+            }
+
             override fun onDeleteCounter(counter: CounterDomain, position: Int) {
                 countersAdapter.removeItem(counter, position)
                 Snackbar
                     .make(binding.root, getString(R.string.removed), Snackbar.LENGTH_LONG)
-                    .setAction(R.string.undo){
+                    .setAction(R.string.undo) {
                         countersAdapter.restoreItem(counter, position)
                     }
                     .setTextColor(Color.WHITE)
                     .setActionTextColor(Color.WHITE)
                     .setBackgroundTint(Color.BLACK)
-                    .addCallback(object: BaseTransientBottomBar.BaseCallback<Snackbar>(){
+                    .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                         override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                             if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
                                 GlobalScope.launch { counterViewModel.deleteCounter(counter.id) }
@@ -114,7 +122,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIfShowBtnBatchDeletion() {
-        binding.containerDeletion.visibility =
+        binding.containerButtons.visibility =
             if (countersAdapter.getSelections().isEmpty()) View.GONE else View.VISIBLE
     }
 

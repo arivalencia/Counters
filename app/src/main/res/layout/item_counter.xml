@@ -79,6 +79,13 @@
                     android:rotation="180"/>
 
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    app:srcCompat="@drawable/ic_baseline_share_24" />
+
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

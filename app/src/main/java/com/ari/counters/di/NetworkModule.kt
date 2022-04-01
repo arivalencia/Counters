@@ -1,6 +1,6 @@
 package com.ari.counters.di
 
-import com.ari.counters.framework.CounterApi
+import com.ari.counters.framework.network.CounterApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

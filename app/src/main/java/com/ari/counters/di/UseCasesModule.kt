@@ -47,4 +47,8 @@ class UseCasesModule {
             counterRepository
         )
 
+    @Inject
+    @Provides
+    fun provideShareDataUseCase(): ShareDataUseCase = ShareDataUseCase()
+
 }

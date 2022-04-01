@@ -3,13 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/bg_primary_button.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/bg_prymary_button.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/bg_search.xml" value="0.2543918918918919" />
+        <entry key="app/src/main/res/drawable/bg_secondary_button.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_drop_down_circle_24.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_baseline_arrow_drop_up_circle_24.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_baseline_error_24.xml" value="0.2543918918918919" />
+        <entry key="app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/drawable/shape_rounded_dialog.xml" value="0.2543918918918919" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />

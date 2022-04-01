@@ -3,6 +3,7 @@ package com.ari.counters.framework
 import com.ari.counters.core.Constants
 import com.ari.counters.data.contracts.CounterRemoteDataSource
 import com.ari.counters.data.model.*
+import com.ari.counters.framework.network.CounterApi
 import javax.inject.Inject
 
 class CounterRemoteDataSourceImpl @Inject constructor(

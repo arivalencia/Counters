@@ -2,7 +2,7 @@ package com.ari.counters.di
 
 import com.ari.counters.data.contracts.CounterLocalDataSource
 import com.ari.counters.data.contracts.CounterRemoteDataSource
-import com.ari.counters.framework.CounterApi
+import com.ari.counters.framework.network.CounterApi
 import com.ari.counters.framework.CounterLocalDataSourceImpl
 import com.ari.counters.framework.CounterRemoteDataSourceImpl
 import com.ari.counters.framework.database.dao.CounterDao

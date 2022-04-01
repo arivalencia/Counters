@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ari.counters.domain.model.CounterDomain
 import com.ari.counters.domain.model.Result
 import com.ari.counters.domain.usecases.*
+import com.ari.counters.framework.ShareTextPlain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -17,7 +18,8 @@ class CounterViewModel @Inject constructor(
     private val addCounterUseCase: AddCounterUseCase,
     private val incrementCounterUseCase: IncrementCounterUseCase,
     private val decrementCounterUseCase: DecrementCounterUseCase,
-    private val deleteCounterUseCase: DeleteCounterUseCase
+    private val deleteCounterUseCase: DeleteCounterUseCase,
+    private val shareDataUseCase: ShareDataUseCase
 ) : ViewModel() {
 
     // Original list
@@ -136,6 +138,10 @@ class CounterViewModel @Inject constructor(
             counter.title.lowercase().contains(inputSearch.lowercase())
         }
         _countersToShow.postValue(coincidences) // Show coincidences
+    }
+
+    fun shareTextPlain(info: String) = viewModelScope.launch {
+        shareDataUseCase(ShareTextPlain(info))
     }
 
 }
