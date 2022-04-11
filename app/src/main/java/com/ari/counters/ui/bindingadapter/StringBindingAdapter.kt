@@ -6,7 +6,5 @@ import com.ari.counters.R
 
 @BindingAdapter("count")
 fun setCount(tv: TextView, count: Int?) {
-    val label = tv.context.getString(R.string.count_n_)
-    tv.text = "$label ${count ?: 0}"
-
+    tv.text = tv.context.getString(R.string.count_n_) + (count ?: 0)
 }

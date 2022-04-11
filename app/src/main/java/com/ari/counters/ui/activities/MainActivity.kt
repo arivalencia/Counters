@@ -121,6 +121,8 @@ class MainActivity : AppCompatActivity() {
         binding.rvCounters.adapter = countersAdapter
     }
 
+
+
     private fun checkIfShowBtnBatchDeletion() {
         binding.containerButtons.visibility =
             if (countersAdapter.getSelections().isEmpty()) View.GONE else View.VISIBLE
